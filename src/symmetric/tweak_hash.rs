@@ -68,6 +68,7 @@ pub(crate) fn chain<TH: TweakableHash>(
 }
 
 pub mod sha;
+pub mod poseidon;
 
 #[cfg(test)]
 mod tests {
