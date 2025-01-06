@@ -1,6 +1,6 @@
 use zkhash::ark_ff::One;
-use zkhash::ark_ff::Zero;
 use zkhash::ark_ff::UniformRand;
+use zkhash::ark_ff::Zero;
 use zkhash::poseidon2::poseidon2_instance_babybear::POSEIDON2_BABYBEAR_24_PARAMS;
 use zkhash::{fields::babybear::FpBabyBear, poseidon2::poseidon2::Poseidon2};
 
@@ -62,7 +62,10 @@ fn poseidon_padded_permute(instance: &Poseidon2<F>, input: &[F]) -> Vec<F> {
 
 /// Poseidon Compression Function, using the Poseidon Permutation.
 /// It works as PoseidonCompress(x) = Truncate(PoseidonPermute(x) + x)
-fn poseidon_compress<const OUT_LEN: usize>(instance: &Poseidon2<F>, input: &[F]) -> [F; OUT_LEN] {
+pub fn poseidon_compress<const OUT_LEN: usize>(
+    instance: &Poseidon2<F>,
+    input: &[F],
+) -> [F; OUT_LEN] {
     assert!(
         input.len() >= OUT_LEN,
         "Poseidon Compression: Input length must be at least output length."

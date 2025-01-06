@@ -32,6 +32,7 @@ pub trait MessageHash {
     ) -> Vec<u8>;
 }
 
+pub mod poseidon;
 pub mod sha;
 
 /// Isolates a chunk of bits from a byte based on the specified chunk index and chunk size.
