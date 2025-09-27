@@ -79,6 +79,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use proptest::prelude::*;
 
     #[test]
     fn test_shake_to_field_prf_key_not_all_same() {
@@ -104,4 +105,19 @@ mod tests {
             K
         );
     }
+
+    proptest! {
+        #[test]
+        fn proptest_prf_deterministic(
+            key in any::<[u8; 32]>(),
+            epoch in any::<u32>(),
+            index in any::<u64>(),
+        ) {
+            let output1 = ShakePRFtoF::<4>::apply(&key, epoch, index);
+            let output2 = ShakePRFtoF::<4>::apply(&key, epoch, index);
+            prop_assert_eq!(output1, output2);
+        }
+    }
 }
+
+// cargo test --lib symmetric::prf::shake_to_field

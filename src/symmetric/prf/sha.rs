@@ -54,6 +54,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use proptest::prelude::*;
 
     #[test]
     fn test_sha_prf_key_not_all_same() {
@@ -78,5 +79,18 @@ mod tests {
             "PRF key had identical bytes in all {} trials",
             K
         );
+    }
+
+    proptest! {
+        #[test]
+        fn proptest_prf_deterministic(
+            key in any::<[u8; 32]>(),
+            epoch in any::<u32>(),
+            index in any::<u64>(),
+        ) {
+            let output1 = ShaPRF::<16>::apply(&key, epoch, index);
+            let output2 = ShaPRF::<16>::apply(&key, epoch, index);
+            prop_assert_eq!(output1, output2);
+        }
     }
 }

@@ -111,6 +111,7 @@ pub type ShaMessageHash192x3 = ShaMessageHash<24, 24, 48, 4>;
 #[cfg(test)]
 mod tests {
     use rand::Rng;
+    use proptest::prelude::*;
 
     use super::*;
 
@@ -163,5 +164,19 @@ mod tests {
             identical_count < TRIALS,
             "All generated randomness arrays had identical bytes"
         );
+    }
+
+    proptest! {
+        #[test]
+        fn proptest_apply_deterministic(
+            parameter in any::<[u8; 16]>(),
+            epoch in any::<u32>(),
+            randomness in any::<[u8; 16]>(),
+            message in any::<[u8; MESSAGE_LENGTH]>(),
+        ) {
+            let output1 = ShaMessageHash128x3::apply(&parameter, epoch, &randomness, &message);
+            let output2 = ShaMessageHash128x3::apply(&parameter, epoch, &randomness, &message);
+            prop_assert_eq!(output1, output2);
+        }
     }
 }
